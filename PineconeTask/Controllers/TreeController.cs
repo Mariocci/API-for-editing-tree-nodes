@@ -11,41 +11,44 @@ public class TreeController{
     [HttpGet]
     public IActionResult GetTree()
     {
-        var result = _treeService.GetTree();
-        if (result == null)
+        var res = _treeService.GetTree();
+        if (res == null)
         {
             return NotFound();
         }
-        return Ok(result);
+        return Ok(res);
     }
     //Dohvat čvora
     [HttpGet("id")]
     public IActionResult GetNode(int id)
     {
-        var result = _treeService.GetNode(id);
-        if (result == null)
+        var res = _treeService.GetNode(id);
+        if (res == null)
         {
             return NotFound();
         }
-        return Ok(result);
+        return Ok(res);
     }
     //Unos čvora
     [HttpPost]
-    public IActionResult CreateNode([FromBody] TreeNodeDTO treeNode){
+    public IActionResult CreateNode([FromBody] TreeNode treeNode){
         var res = _treeService.CreateNode(treeNode);
-        return CreatedAtAction(nameof(GetTree), new { id = result.Id }, result);
+        return CreatedAtAction(nameof(GetTree), new { id = res.Id }, res);
     }
     //Promjena čvora
     [HttpPut("{id}")]
-    public IActionResult UpdateNode(int id, [FromBody] TreeNodeDto treeNode){
-        var result = _treeService.UpdateNode(id, updateNodeDto);
-        if (!result) return BadRequest();
+    public IActionResult UpdateNode(int id, [FromBody] TreeNode treeNode){
+        var res = _treeService.UpdateNode(id, updateNodeDto);
+        if (!res) return BadRequest();
         return NoContent();
     }
     //Brisanje čvora
     [HttpDelete("{id}")]
     public IActionResult DeleteNode(int id)
-    {
+    {   
+        if(id = 1){//Provjera korjena
+            return BadRequest();
+        }
         _treeService.DeleteNode(id);
         return NoContent();
     }

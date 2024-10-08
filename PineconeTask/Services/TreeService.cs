@@ -31,6 +31,7 @@ public class TreeService{
     }
 
     public void SaveNode(TreeNode node){
+        node.parent_node_id = _treeRepository.GetLatestOrdering(node.parent_node_id);
         _treeRepository.Update(node);
     }
 
@@ -58,6 +59,13 @@ public class TreeService{
         return _treeRepository.GetNode(id);
     }
     public bool DeleteNode(int id){
+        List<TreeNode> children = _treeRepository.GetChildrenNodes(id);
+        //rekurzivno brisanje svih child čvorova
+        if(children.Any()){
+            foreach(TreeNode child: children){
+                DeleteNode(child.Id);
+            }
+        }
         _treeRepository.DeleteNode(id);
         return true;
     }

@@ -6,9 +6,10 @@ public class TreeRepository{
         _dbContext = dbContext;
     }
 
-    public List<TreeNode    > GetTree(){
+    public List<TreeNode> GetTree(){
         return _dbContext.TreeNodes.ToList();
     }/*SELECT * FROM TreeNodes*/
+    
     public TreeNode GetNode(int id){
         return _dbContext.TreeNodes.Find(id);
     } /* SELECT * FROM TreeNodes WHERE Id = @id */
@@ -29,6 +30,7 @@ public class TreeRepository{
     }/* UPDATE TreeNode 
         set  Title = @Title, ParentNodeId = @ParentNodeId, Ordering = @Ordering
         WHERE Id=@Id*/
+
     public void DeleteNode(int id)
     {
         var node = _dbContext.TreeNodes.Find(id);
@@ -39,4 +41,17 @@ public class TreeRepository{
         }
     }/* DELETE FROM TreeNodes
         WHERE Id = @id;*/
+
+    public int GetLatestOrdering(int parentId){
+            return _dbContext.TreeNodes
+                     .Where(node => node.ParentNodeId == parentId)
+                     .Select(node => (int?)node.Ordering)
+                     .Max() ?? 0;
+    }/* SELECT MAX(Ordering) FROM TreeNodes WHERE ParentNodeId = @parentId */
+
+    public List<TreeNode> GetChildren(int parentId){
+        return _dbContext.TreeNodes
+                        .Where(node => node.ParentNodeId == parentId)
+                        .ToList();
+    } /* SELECT * FROM TreeNodes WHERE ParentNodeId = @parentId */
 }
